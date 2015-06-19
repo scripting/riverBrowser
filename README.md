@@ -1,6 +1,6 @@
 # riverBrowser
 
-JavaScript code to display a <a href="http://scripting.com/2014/06/02/whatIsARiverOfNewsAggregator.html">river of news</a>.
+riverBrowser is a JavaScript toolkit that displays a <a href="http://scripting.com/2014/06/02/whatIsARiverOfNewsAggregator.html">river of news</a>.
 
 Here's a blog post announcing this project.
 
