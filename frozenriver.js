@@ -77,27 +77,27 @@ onGetRiverStream ({
 			{
 				"feedTitle": "davewiner's RSS Feed",
 					"feedUrl": "http://lucky.wtf/davetwitterfeed.xml",
-						"websiteUrl": "http://twitter.com/davewiner",
-							"feedDescription": "A feed generated from davewiner's tweets by noderunner.js",
-								"whenLastUpdate": "Thu, 18 Jun 2015 22:08:24 GMT",
-									"item": [
-										{
-											"title": "",
-												"link": "http://t.co/OVamQyS9Ye",
-													"body": "Imagine if Germany flew the swastika over its main government building.",
-														"outline": {
-															"text": "Imagine if Germany flew the swastika over its main government building.",
-																"created": "Thu, 18 Jun 2015 22:02:05 GMT",
-																	"type": "tweet",
-																		"tweetid": "611655145638785024",
-																			"tweetusername": "davewiner"
-																				},
-																					"pubDate": "Thu, 18 Jun 2015 22:02:05 GMT",
-																						"permaLink": "http://twitter.com/davewinerstatus/611655145638785024",
-																							"id": "0202943"
-																						}
-																		]
-														},
+					"websiteUrl": "http://twitter.com/davewiner",
+					"feedDescription": "A feed generated from davewiner's tweets by noderunner.js",
+					"whenLastUpdate": "Thu, 18 Jun 2015 22:08:24 GMT",
+					"item": [
+						{
+							"title": "",
+							"link": "http://t.co/OVamQyS9Ye",
+							"body": "Imagine if Germany flew the swastika over its main government building.",
+							"outline": {
+								"text": "Imagine if Germany flew the swastika over its main government building.",
+								"created": "Thu, 18 Jun 2015 22:02:05 GMT",
+								"type": "tweet",
+								"tweetid": "611655145638785024",
+								"tweetusername": "davewiner"
+								},
+							"pubDate": "Thu, 18 Jun 2015 22:02:05 GMT",
+							"permaLink": "http://twitter.com/davewinerstatus/611655145638785024",
+							"id": "0202943"
+							}
+							]
+			},
 			{
 				"feedTitle": "Hacker News Firehose",
 				"feedUrl": "http://hn.geekity.com/newstories.xml",
