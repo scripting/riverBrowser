@@ -2,7 +2,7 @@
 
 riverBrowser is a JavaScript toolkit that displays a <a href="http://scripting.com/2014/06/02/whatIsARiverOfNewsAggregator.html">river of news</a>.
 
-Here's a blog post announcing this project.
+Here's a <a href="http://liveblog.co/users/davewiner/2015/06/19/riverbrowserOpenSourceRelease.html">blog post</a> announcing this project.
 
 #### What is a river?
 
