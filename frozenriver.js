@@ -1,3 +1,5 @@
+//Sample data for riverbrowserdemo.html
+
 onGetRiverStream ({
 	"updatedFeeds": {
 		"updatedFeed": [
@@ -56,6 +58,47 @@ onGetRiverStream ({
 				]
 			},
 			{
+				"feedTitle": "ESPN.com - NBA",
+				"feedUrl": "http://sports.espn.go.com/espn/rss/nba/news",
+				"websiteUrl": "http://espn.go.com",
+				"feedDescription": "Latest NBA news from ESPN.com",
+				"whenLastUpdate": "Thu, 18 Jun 2015 22:20:57 GMT",
+				"item": [
+				{
+					"title": "Pelicans' Gordon exercises final year option",
+					"link": "http://espn.go.com/nba/story/_/id/13109511/new-orleans-pelicans-eric-gordon-exercises-final-year-option-contract",
+					"body": "Pelicans' Gordon exercises final year option",
+					"pubDate": "Thu, 18 Jun 2015 23:14:19 GMT",
+					"permaLink": "",
+					"id": "0203000"
+				}
+				]
+			},
+			{
+				"feedTitle": "davewiner's RSS Feed",
+					"feedUrl": "http://lucky.wtf/davetwitterfeed.xml",
+						"websiteUrl": "http://twitter.com/davewiner",
+							"feedDescription": "A feed generated from davewiner's tweets by noderunner.js",
+								"whenLastUpdate": "Thu, 18 Jun 2015 22:08:24 GMT",
+									"item": [
+										{
+											"title": "",
+												"link": "http://t.co/OVamQyS9Ye",
+													"body": "Imagine if Germany flew the swastika over its main government building.",
+														"outline": {
+															"text": "Imagine if Germany flew the swastika over its main government building.",
+																"created": "Thu, 18 Jun 2015 22:02:05 GMT",
+																	"type": "tweet",
+																		"tweetid": "611655145638785024",
+																			"tweetusername": "davewiner"
+																				},
+																					"pubDate": "Thu, 18 Jun 2015 22:02:05 GMT",
+																						"permaLink": "http://twitter.com/davewinerstatus/611655145638785024",
+																							"id": "0202943"
+																						}
+																		]
+														},
+			{
 				"feedTitle": "Hacker News Firehose",
 				"feedUrl": "http://hn.geekity.com/newstories.xml",
 				"websiteUrl": "https://news.ycombinator.com/newest",
@@ -101,7 +144,7 @@ onGetRiverStream ({
 					{
 						"title": "Why Donald Trump Is Important, in One Chart (Tim Hanrahan/Wall Street Journal)",
 						"link": "http://www.memeorandum.com/150616/p43#a150616p43",
-						"body": "Tim Hanrahan / Wall Street Journal:\nWhy Donald Trump Is Important, in One Chart&nbsp; --&nbsp; Businessman Donald Trump is controversial, and his political star has dimmed a bit since he last floated the idea of a White House bid.&nbsp; But he scores well enough in polls to ...",
+						"body": "Tim Hanrahan / Wall Street Journal:\nWhy Donald Trump Is Important, in One Chart&nbsp; --&nbsp; Businessman Donald Trump is controversial, and his political star has dimmed a bit since he last floated the idea of a White House bid.&nbsp; :kiss: But he scores well enough in polls to ...",
 						"pubDate": "Tue, 16 Jun 2015 17:05:05 GMT",
 						"permaLink": "http://www.memeorandum.com/150616/p43#a150616p43",
 						"id": "0185477"

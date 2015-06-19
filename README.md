@@ -1,6 +1,12 @@
 # riverBrowser
 
-JavaScript code to display a river of news.
+JavaScript code to display a <a href="http://scripting.com/2014/06/02/whatIsARiverOfNewsAggregator.html">river of news</a>.
+
+#### What is a river?
+
+riverBrowser works with a documented format called <a href="http://riverjs.org/">river.js</a>. 
+
+It's a reverse-chronologic list of new stories. My <a href="https://github.com/scripting/river4">River4</a> app generates these files. It's an open format, available for anyone to use.
 
 #### Demo app
 

@@ -5,16 +5,18 @@ document.write ('<script src="http://api.nodestorage.io/api.js"></script>');
 document.write ('<script src="http://fargo.io/code/shared/emojify.js"></script>');
 document.write ('<script src="http://fargo.io/cms/dateFormat.js"></script>');
 document.write ('<link rel="stylesheet" href="http://fargo.io/code/fontAwesome/css/font-awesome.min.css"/>');
-document.write ('<script src="http://fargo.io/code/markdownConverter.js"></script>');
+document.write ('<link href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">');
+document.write ('<script src="http://fargo.io/code/browsers/outlinebrowser.js"></script>'); //6/18/15 by DW
+document.write ('<link href="http://fargo.io/code/browsers/riverbrowser.css" rel="stylesheet" type="text/css">');
 
-var theRiver; 
-var serialnumForRiverRender = 0; 
-var riverCache = new Array ();
-var riverConfig = {
+var riverBrowserData = {
+	version: "0.40",
 	enclosureIconHtml: "<i class=\"fa fa-headphones\"></i>",
 	flEnclosureIcon: true,
 	flShareIcon: true,
 	flOutlinesExpandedByDefault: false, //4/16/15 by DW
+	urlTwitterServer: "http://twitter2.radio3.io:5342/", //6/18/15 by DW
+	theRiver: undefined,  //6/18/15 by DW -- used to be global
 	getExtraFooterCallback: function (item, theFooter) {
 		return (theFooter);
 		},
@@ -53,7 +55,7 @@ function findRiverItem (theRiver, iditem, callback) { //4/14/15 by DW
 		}
 	}
 function shareClick (iditem) {
-	var feeds = theRiver.updatedFeeds.updatedFeed, urlLinkBlogTool = "http://radio3.io/";
+	var feeds = riverBrowserData.theRiver.updatedFeeds.updatedFeed, urlLinkBlogTool = "http://radio3.io/";
 	try {
 		if (appPrefs.urlLinkBlogTool != undefined) { //10/3/14 by DW
 			urlLinkBlogTool = appPrefs.urlLinkBlogTool;
@@ -107,17 +109,9 @@ function shareClick (iditem) {
 		}
 	
 	}
-function ecOutline (idnum) { 
-	var c = document.getElementById ("idOutlineWedge" + idnum), idUL = "#idOutlineLevel" + idnum;
-	if (c.className == "fa fa-caret-down") {
-		c.className = "fa fa-caret-right";
-		c.style.color = "black";
-		$(idUL).slideUp (75);
-		}
-	else {
-		c.className = "fa fa-caret-down";
-		c.style.color = "silver";
-		$(idUL).slideDown (75);
+function riverInitTwitterServer () { //6/18/15 by DW
+	if (twStorageData.urlTwitterServer === undefined) {
+		twStorageData.urlTwitterServer = riverBrowserData.urlTwitterServer; 
 		}
 	}
 function ecTweet (idnum, idtweet) { 
@@ -128,6 +122,7 @@ function ecTweet (idnum, idtweet) {
 		}
 	else {
 		c.style.color = "silver";
+		riverInitTwitterServer (); //6/18/15 by DW
 		twViewTweet (idtweet, idUL, function () {
 			$("#" + idUL).slideDown (75);
 			});
@@ -143,21 +138,6 @@ function ecImage (idnum) {
 		c.style.color = "silver";
 		$(idUL).slideDown (75);
 		}
-	}
-function getIcon (idnum, flcollapsed) {
-	var wedgedir, color;
-	if (flcollapsed) {
-		wedgedir = "right";
-		color = "black";
-		}
-	else {
-		wedgedir = "down";
-		color = "silver";
-		}
-	
-	var clickscript = "onclick=\"ecOutline (" + idnum + ")\" ";
-	var icon = "<span class=\"spOutlineIcon\"><a class=\"aOutlineWedgeLink\" " + clickscript + "><i class=\"fa fa-caret-" + wedgedir + "\" style=\"color: " + color + ";\" id=\"idOutlineWedge" + idnum + "\"></i></a></span>";
-	return (icon);
 	}
 function getIconForTweet (idnum, idtweet, flcollapsed) { //9/22/14 by DW
 	var color;
@@ -188,7 +168,7 @@ function getIconForImage (idnum, flcollapsed) { //9/23/14 by DW
 	return (icon);
 	}
 function getShareLink (item) { //9/22/14 by DW
-	if (riverConfig.flShareIcon) {
+	if (riverBrowserData.flShareIcon) {
 		var sharescript = "shareClick ('" + item.id + "');";
 		var sharelink = "<span class=\"spShareLink\"><a onclick=\"" + sharescript + "\" title=\"Share\"><i class=\"fa fa-share\"></i></a></span>";
 		return (sharelink);
@@ -198,13 +178,13 @@ function getShareLink (item) { //9/22/14 by DW
 		}
 	}
 function getEnclosureLink (item) { //9/22/14 by DW
-	if (riverConfig.flEnclosureIcon) {
+	if (riverBrowserData.flEnclosureIcon) {
 		var enclosurelink = "";
 		if (item.enclosure != undefined) {
 			var theEnclosure = item.enclosure [0];
 			if ((theEnclosure != undefined) && (theEnclosure.url != undefined)) {
 				}
-				enclosurelink = "<span class=\"spEnclosureLink\"><a href=\"" + theEnclosure.url + "\" target=\"_blank\" title=\"Download enclosure\">" + riverConfig.enclosureIconHtml + "</a></span>";
+				enclosurelink = "<span class=\"spEnclosureLink\"><a href=\"" + theEnclosure.url + "\" target=\"_blank\" title=\"Download enclosure\">" + riverBrowserData.enclosureIconHtml + "</a></span>";
 			}
 		return (enclosurelink);
 		}
@@ -216,10 +196,7 @@ function getItemFooter (item) { //9/22/14 by DW
 	var sharelink = getShareLink (item);
 	var enclosurelink = getEnclosureLink (item);
 	var itemfooter = "<span class=\"spTimeDifference\">" + timeDifference (item.pubDate) + "</span>" + enclosurelink + sharelink;
-	return ("<div class=\"divItemFooter\">" + riverConfig.getExtraFooterCallback (item, itemfooter) + "</div>");
-	}
-function expandableTextLink (theText, idLevel) {
-	return ("<a class=\"aOutlineTextLink\" onclick=\"ecOutline (" + idLevel + ")\">" + theText + "</a>");
+	return ("<div class=\"divItemFooter\">" + riverBrowserData.getExtraFooterCallback (item, itemfooter) + "</div>");
 	}
 function expandableTweetTextLink (theText, idTweet, idLevel) {
 	return ("<a class=\"aOutlineTextLink\" onclick=\"ecTweet (" + idLevel + ", '" + idTweet + "')\">" + theText + "</a>");
@@ -227,183 +204,34 @@ function expandableTweetTextLink (theText, idTweet, idLevel) {
 function expandableImageTextLink (theText, idLevel) {
 	return ("<a class=\"aOutlineTextLink\" onclick=\"ecImage (" + idLevel + ")\">" + theText + "</a>");
 	}
-function riverGetPermalinkString (urlPermalink, permalinkString) {
-	if (urlPermalink == undefined) {
-		return ("");
-		}
-	if (permalinkString == undefined) { 
-		permalinkString = "#";
-		}
-	return ("<div class=\"divOutlinePermalink\"><a href=\"" + urlPermalink + "\">" + permalinkString + "</a></div>");
-	}
 function riverRenderOutline (outline, flMarkdown, urlPermalink, permalinkString, flExpanded) {
-	var htmltext = "", indentlevel = 0, permalink = riverGetPermalinkString (urlPermalink, permalinkString);
-	var markdown = new Markdown.Converter ();
-	if (flMarkdown === undefined) {
-		flMarkdown = false;
-		}
-	if (flExpanded === undefined) { //10/23/14 by DW
-		flExpanded = riverConfig.flOutlinesExpandedByDefault; //4/16/15 by DW
-		}
-	function add (s) {
-		htmltext += filledString ("\t", indentlevel) + s + "\r\n";
-		}
-	function getHotText (outline) {
-		var origtext = outline.text;
-		var s = hotUpText (outline.text, outline.url);
-		if (s != origtext) {
-			return (s);
-			}
-		else {
-			if (getBoolean (outline.bold)) { //12/6/14 by DW
-				s = "<span class=\"spBoldHead\">" + s + "</span>";
-				}
-			return (expandableTextLink (s, serialnumForRiverRender));
-			}
-		}
-	function hasSubs (outline) {
-		return (outline.subs != undefined) && (outline.subs.length > 0);
-		}
-	function getImgHtml (imgatt) { //4/28/15 by DW
-		if (imgatt === undefined) {
-			return ("");
-			}
-		else {
-			return ("<img style=\"float: right; margin-left: 24px; margin-top: 14px; margin-right: 14px; margin-bottom: 14px;\" src=\"" + imgatt +"\">");
-			}
-		}
-	function gatherStylesFromOutline (outline) { //11/5/14 by DW
-		var atts = new Object (), styles = new Object ();
-		for (var x in outline) {
-			switch (x) {
-				case "color":
-				case "direction":
-				case "font-family":
-				case "font-size":
-				case "font-weight":
-				case "letter-spacing":
-				case "line-height":
-				case "margin-left":
-				case "text-decoration":
-				case "text-shadow":
-				case "text-transform":
-				case "white-space":
-				case "word-spacing":
-					styles [x] = outline [x];
-					break;
-				}
-			}
-		return (styles);
-		}
-	function getStylesString (outline, flcollapsed) { //11/7/14 by DW
-		var styles = gatherStylesFromOutline (outline), style = "";
-		if (flcollapsed) {
-			styles.display = "none";
-			}
-		for (var x in styles) {
-			style += x + ": " + styles [x] + "; ";
-			}
-		if (style.length > 0) {
-			style = " style=\"" + style + "\"";
-			}
-		return (style);
-		}
-	function getSubsMarkdownText (outline) {
-		var s = "", style = getStylesString (outline, false);
-		for (var i = 0; i < outline.subs.length; i++) {
-			var child = outline.subs [i], img = "", imgatt = $(child).attr ("img");
-			
-			if (!getBoolean (child.isComment)) { //5/2/15 by DW
-				s += getImgHtml (imgatt) + child.text + "\r\r";
-				if (hasSubs (child)) {
-					s += getSubsMarkdownText (child);
-					}
-				}
-			
-			}
-		return (s);
-		}
-	function addSubs (outline, flcollapsed) {
-		if (hasSubs (outline)) {
-			var style = getStylesString (outline, flcollapsed);
-			add ("<ul class=\"ulOutlineList\" id=\"idOutlineLevel" + serialnumForRiverRender++ + "\"" + style + ">"); indentlevel++;
-			for (var i = 0; i < outline.subs.length; i++) {
-				var child = outline.subs [i], flchildcollapsed = getBoolean (child.collapse), img = getImgHtml (child.img);
-				if (!getBoolean (child.isComment)) { //5/2/15 by DW
-					if (hasSubs (child)) {
-						add ("<li>"); indentlevel++;
-						add ("<div class=\"divOutlineText\">" + getIcon (serialnumForRiverRender, flchildcollapsed) + img + getHotText (child) + "</div>");
-						addSubs (child, flchildcollapsed);
-						add ("</li>"); indentlevel--;
-						}
-					else {
-						add ("<li><div class=\"divOutlineText\">" + img + child.text + "</div></li>");
-						}
-					}
-				}
-			add ("</ul>"); indentlevel--;
-			}
-		}
-	
-	
-	if (hasSubs (outline)) { //9/22/14 by DW
-		var flTopLevelCollapsed = !flExpanded, theText = getHotText (outline);
-		add ("<div class=\"divRenderedOutline\">"); indentlevel++;
-		add ("<div class=\"divItemHeader divOutlineHead divOutlineHeadHasSubs\">" + getIcon (serialnumForRiverRender, flTopLevelCollapsed) + theText + permalink + "</div>");
-		
-		if (flMarkdown) {
-			var markdowntext = getSubsMarkdownText (outline), style = "";
-			if (flTopLevelCollapsed) { //10/23/14 by DW
-				style = " style=\"display: none;\"";
-				}
-			var opendiv = "<div class=\"divMarkdownSubs\" id=\"idOutlineLevel" + serialnumForRiverRender++ + "\" " + style + ">";
-			add (opendiv + markdown.makeHtml (markdowntext) + "</div>");
-			}
-		else {
-			add ("<div class=\"divOutlineSubs\">"); indentlevel++;
-			addSubs (outline, flTopLevelCollapsed);
-			add ("</div>"); indentlevel--;
-			}
-		
-		add ("</div>"); indentlevel--;
-		
-		serialnumForRiverRender++; //9/22/14 by DW
-		}
-	else {
-		add ("<div class=\"divRenderedOutline\">"); indentlevel++;
-		add ("<div class=\"divItemHeader divOutlineHead\">" + hotUpText (outline.text, outline.url) + permalink + "</div>");
-		add ("</div>"); indentlevel--;
-		}
-	
-	return (htmltext);
+	return (renderOutlineBrowser (outline, flMarkdown, urlPermalink, permalinkString, flExpanded));
 	}
 function riverRenderTypedOutline (outline, urlPermalink, permalinkString, flExpanded) { //10/23/14 by DW -- experiment
 	var itemhtml, permalink = riverGetPermalinkString (urlPermalink, permalinkString);
 	if (flExpanded === undefined) {
 		flExpanded = false;
 		}
-	
-	
 	switch (outline.type) {
 		case "tweet":
 			var flTweetCollapsed = true, style = "";
 			if (flTweetCollapsed) {
 				style = " style=\"display: none;\"";
 				}
-			var tweetlinetext = getIconForTweet (serialnumForRiverRender, outline.tweetid, flTweetCollapsed) + expandableTweetTextLink (outline.text, outline.tweetid, serialnumForRiverRender);
+			var tweetlinetext = getIconForTweet (outlineBrowserData.serialNum, outline.tweetid, flTweetCollapsed) + expandableTweetTextLink (outline.text, outline.tweetid, outlineBrowserData.serialNum);
 			var tweethead = "<div class=\"divRenderedOutline\"><div class=\"divItemHeader divOutlineHead\">" + tweetlinetext  + "</div></div>";
-			var idDiv = "idOutlineLevel" + serialnumForRiverRender++, idTweet = outline.tweetid;
+			var idDiv = "idOutlineLevel" + outlineBrowserData.serialNum++, idTweet = outline.tweetid;
 			var tweetbody = "<div class=\"divTweetInRiver\" id=\"" + idDiv + "\"" + style + ">&lt;tweet id=" + idTweet + "></div>";
 			itemhtml = tweethead + tweetbody;
 			break;
 		case "image":
-			var imagelinetext = getIconForImage (serialnumForRiverRender, !flExpanded) + expandableImageTextLink (outline.text, serialnumForRiverRender);
+			var imagelinetext = getIconForImage (outlineBrowserData.serialNum, !flExpanded) + expandableImageTextLink (outline.text, outlineBrowserData.serialNum);
 			var style = " style=\"display: none;\"";
 			if (flExpanded) {
 				style = "";
 				}
 			var imagehead = "<div class=\"divRenderedOutline\"><div class=\"divItemHeader divOutlineHead\">" + imagelinetext  + permalink + "</div></div>";
-			var idDiv = "idOutlineLevel" + serialnumForRiverRender++, idTweet = outline.tweetid;
+			var idDiv = "idOutlineLevel" + outlineBrowserData.serialNum++, idTweet = outline.tweetid;
 			var imgelement = "<img class=\"divRenderedImage\" src=\"" + outline.url + "\">";
 			if (urlPermalink != undefined) { //10/25/14 by DW
 				imgelement = "<a href=\"" + urlPermalink + "\">" + imgelement + "</a>";
@@ -431,11 +259,11 @@ function riverRenderTypedOutline (outline, urlPermalink, permalinkString, flExpa
 	return (itemhtml);
 	}
 function freshRiverDisplay (idRiver) {
-	var feeds = theRiver.updatedFeeds.updatedFeed, idSerialNum = 0;
+	var feeds = riverBrowserData.theRiver.updatedFeeds.updatedFeed, idSerialNum = 0;
 	$("#" + idRiver).empty ();
 	for (var i = 0; i < feeds.length; i++) {
 		var feed = feeds [i], feedLink, whenFeedUpdated, favicon = "", items = "";
-		if (riverConfig.includeFeedInRiverCallback (feed)) {
+		if (riverBrowserData.includeFeedInRiverCallback (feed)) {
 			//set feedLink
 				feedLink = feed.feedTitle;
 				if ((feed.websiteUrl != null) && (feed.websiteUrl.length > 0)) {
@@ -450,7 +278,7 @@ function freshRiverDisplay (idRiver) {
 			//set items
 				for (var j = 0; j < feed.item.length; j++) {
 					var item = feed.item [j], title, body, itemlink, itemhtml, sharelink, idItem = "idItem" + idSerialNum++, enclosurelink = "";
-					if (riverConfig.includeItemInRiverCallback (item)) {
+					if (riverBrowserData.includeItemInRiverCallback (item)) {
 						if (j > 0) {
 							items += "<div class=\"divInterItemSpacer\"></div>";
 							}
@@ -461,17 +289,17 @@ function freshRiverDisplay (idRiver) {
 									if (flTweetCollapsed) {
 										style = " style=\"display: none;\"";
 										}
-									var tweetlinetext = getIconForTweet (serialnumForRiverRender, item.outline.tweetid, flTweetCollapsed) + expandableTweetTextLink (item.outline.text, item.outline.tweetid, serialnumForRiverRender);
+									var tweetlinetext = getIconForTweet (outlineBrowserData.serialNum, item.outline.tweetid, flTweetCollapsed) + expandableTweetTextLink (item.outline.text, item.outline.tweetid, outlineBrowserData.serialNum);
 									var tweethead = "<div class=\"divRenderedOutline\"><div class=\"divItemHeader divOutlineHead\">" + tweetlinetext  + "</div></div>";
-									var idDiv = "idOutlineLevel" + serialnumForRiverRender++, idTweet = item.outline.tweetid;
+									var idDiv = "idOutlineLevel" + outlineBrowserData.serialNum++, idTweet = item.outline.tweetid;
 									var tweetbody = "<div class=\"divTweetInRiver\" id=\"" + idDiv + "\"" + style + ">&lt;tweet id=" + idTweet + "></div>";
 									itemhtml = tweethead + tweetbody + getItemFooter (item);
 									break;
 								case "image":
-									var imagelinetext = getIconForImage (serialnumForRiverRender, true) + expandableImageTextLink (item.outline.text, serialnumForRiverRender);
+									var imagelinetext = getIconForImage (outlineBrowserData.serialNum, true) + expandableImageTextLink (item.outline.text, outlineBrowserData.serialNum);
 									var style = " style=\"display: none;\"";
 									var imagehead = "<div class=\"divRenderedOutline\"><div class=\"divItemHeader divOutlineHead\">" + imagelinetext  + "</div></div>";
-									var idDiv = "idOutlineLevel" + serialnumForRiverRender++, idTweet = item.outline.tweetid;
+									var idDiv = "idOutlineLevel" + outlineBrowserData.serialNum++, idTweet = item.outline.tweetid;
 									var imagebody = "<div class=\"divImageInRiver\" id=\"" + idDiv + "\"" + style + "><img class=\"divRenderedImage\" src=\"" + item.outline.url + "\"></div>";
 									itemhtml = imagehead + imagebody + getItemFooter (item);
 									break;
@@ -527,41 +355,22 @@ function freshRiverDisplay (idRiver) {
 			$("#" + idRiver).append ("<div class=\"divRiverSection\">" + head + items + "</div>");
 			}
 		}
-	
 	}
 function onGetRiverStream (updatedFeeds) {
 	}
 function httpGetRiver (urlRiver, flSkipCache, idRiver, callback) {
 	var whenstart = new Date ();
-	if (flSkipCache === undefined) { //by default cache is off
-		flSkipCache = true; 
-		}
 	if (idRiver === undefined) { //10/5/14 by DW
 		idRiver = "idRiverDisplay";
 		}
 	urlLastRiverGet = urlRiver;
-	if (!flSkipCache) {
-		for (var i = 0; i < riverCache.length; i++) {
-			var item = riverCache [i];
-			if (item.url == urlRiver) {
-				console.log ("httpGetRiver: found in cache at " + i + ".");
-				theRiver = item.jstruct;
-				freshRiverDisplay (idRiver);
-				return;
-				}
-			}
-		}
 	$.ajax ({ 
 		url: urlRiver,  
 		jsonpCallback : "onGetRiverStream",
 		success: function (data) {
 			console.log ("httpGetRiver: read took " + secondsSince (whenstart) + " secs.");
-			theRiver = data;
+			riverBrowserData.theRiver = data;
 			freshRiverDisplay (idRiver);
-			riverCache [riverCache.length] = {
-				url: urlRiver,
-				jstruct: data
-				};
 			if (callback != undefined) {
 				callback ();
 				}
@@ -574,7 +383,4 @@ function httpGetRiver (urlRiver, flSkipCache, idRiver, callback) {
 			},
 		dataType: "jsonp"
 		});
-	}
-function clearRiverCache () {
-	riverCache = new Array ();
 	}
