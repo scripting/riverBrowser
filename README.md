@@ -20,6 +20,14 @@ I took a snapshot of one of my rivers, so the content would stay fixed. It can b
 
 The <a href="https://github.com/scripting/riverBrowser/blob/master/riverbrowserdemo.html">source</a> for the demo app is included in this repository.
 
+#### httpGetRiver
+
+To load a river from the web, call httpGetRiver.
+
+<code>httpGetRiver ("http://fargo.io/code/browsers/frozenriver.js", "idRiverDisplay");</code>
+
+The first parameter is the address of the river file. The second parameter is the id of a div, which is where you want the river to be displayed. From there everything is handled for you. 
+
 #### Projects that use riverBrowser
 
 These are my real-world projects that use riverBrowser. 

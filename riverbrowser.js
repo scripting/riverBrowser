@@ -358,7 +358,7 @@ function freshRiverDisplay (idRiver) {
 	}
 function onGetRiverStream (updatedFeeds) {
 	}
-function httpGetRiver (urlRiver, flSkipCache, idRiver, callback) {
+function httpGetRiver (urlRiver, idRiver, callback) {
 	var whenstart = new Date ();
 	if (idRiver === undefined) { //10/5/14 by DW
 		idRiver = "idRiverDisplay";
