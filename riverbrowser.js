@@ -10,7 +10,7 @@ document.write ('<script src="http://fargo.io/code/browsers/outlinebrowser.js"><
 document.write ('<link href="http://fargo.io/code/browsers/riverbrowser.css" rel="stylesheet" type="text/css">');
 
 var riverBrowserData = {
-	version: "0.40",
+	version: "0.41",
 	enclosureIconHtml: "<i class=\"fa fa-headphones\"></i>",
 	flEnclosureIcon: true,
 	flShareIcon: true,
@@ -25,6 +25,13 @@ var riverBrowserData = {
 		},
 	includeItemInRiverCallback: function (item) {
 		return (true);
+		},
+	createLinkCallback: function (url, linktext, title) {
+		var titleAtt = "";
+		if (title !== undefined) {
+			titleAtt = " title=\"" + title + "\"";
+			}
+		return ("<a href=\"" + url + "\"" + titleAtt + ">" + linktext + "</a>");
 		}
 	};
 
@@ -90,19 +97,12 @@ function shareClick (iditem) {
 				else {
 					addParam ("title", item.title);
 					addParam ("link", item.link);
-					addParam ("description", item.body);
 					}
 				
 				if (endsWith (urlShare, "&")) {
 					urlShare = urlShare.substr (0, urlShare.length - 1); //pop last char
 					}
-				console.log ("shareClick: item == " + jsonStringify (item));
-				console.log ("shareClick: urlShare == " + urlShare);
 				window.open (urlShare);
-				
-				
-				
-				
 				return;
 				}
 			}
@@ -258,6 +258,11 @@ function riverRenderTypedOutline (outline, urlPermalink, permalinkString, flExpa
 	itemhtml = emojiProcess (itemhtml); //11/4/14 by DW
 	return (itemhtml);
 	}
+
+function createRiverLink (url, linktext, title) { //12/17/15 by DW
+	return (riverBrowserData.createLinkCallback (url, linktext, title));
+	}
+
 function freshRiverDisplay (idRiver) {
 	var feeds = riverBrowserData.theRiver.updatedFeeds.updatedFeed, idSerialNum = 0;
 	$("#" + idRiver).empty ();
@@ -267,11 +272,11 @@ function freshRiverDisplay (idRiver) {
 			//set feedLink
 				feedLink = feed.feedTitle;
 				if ((feed.websiteUrl != null) && (feed.websiteUrl.length > 0)) {
-					feedLink = "<a href=\"" + feed.websiteUrl + "\" title=\"Web page\">" + feedLink + "</a>";
+					feedLink = createRiverLink (feed.websiteUrl, feedLink, "Web page"); //"<a href=\"" + feed.websiteUrl + "\" title=\"Web page\">" + feedLink + "</a>";
 					favicon = "<img class=\"imgFavIcon\" src=\"" + getFavicon (feed.websiteUrl) + "\" width=\"16\" height=\"16\">";
 					}
 				if (feed.feedUrl.length > 0) {
-					feedLink += " (<a href=\"" + feed.feedUrl + "\" title=\"Link to RSS feed\">Feed</a>)";
+					feedLink += " (" + createRiverLink (feed.feedUrl, "Feed", "Link to RSS feed") + ")"; //" (<a href=\"" + feed.feedUrl + "\" title=\"Link to RSS feed\">Feed</a>)";
 					}
 			//set whenFeedUpdated
 				whenFeedUpdated = feed.whenLastUpdate;
@@ -332,7 +337,7 @@ function freshRiverDisplay (idRiver) {
 									}
 							//set itemlink
 								if (item.link.length > 0) {
-									itemlink = "<a href=\"" + item.link + "\">" + title + "</a>";
+									itemlink = createRiverLink (item.link, title, undefined); //"<a href=\"" + item.link + "\">" + title + "</a>";
 									}
 								else {
 									itemlink = title;
