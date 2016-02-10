@@ -204,3 +204,12 @@
 	font-weight: bold;
 	}
 
+/* 2/5/16 by DW */
+	.divGetRiverError {
+		font-family: "Ubuntu";
+		font-size: 20px;
+		margin-top: 2em;
+		margin-bottom: 3em;
+		line-height: 145%;
+		}
+

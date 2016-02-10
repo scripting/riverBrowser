@@ -195,7 +195,16 @@ function getEnclosureLink (item) { //9/22/14 by DW
 function getItemFooter (item) { //9/22/14 by DW
 	var sharelink = getShareLink (item);
 	var enclosurelink = getEnclosureLink (item);
-	var itemfooter = "<span class=\"spTimeDifference\">" + timeDifference (item.pubDate) + "</span>" + enclosurelink + sharelink;
+	var timediff;
+	
+	try { //2/10/16 by DW
+		timediff = timeDifference (item.pubDate);
+		}
+	catch (err) {
+		timediff = "Recently";
+		}
+	
+	var itemfooter = "<span class=\"spTimeDifference\">" + timediff + "</span>" + enclosurelink + sharelink;
 	return ("<div class=\"divItemFooter\">" + riverBrowserData.getExtraFooterCallback (item, itemfooter) + "</div>");
 	}
 function expandableTweetTextLink (theText, idTweet, idLevel) {
@@ -382,6 +391,7 @@ function httpGetRiver (urlRiver, idRiver, callback) {
 			},
 		error: function (status) {
 			console.log ("httpGetRiver: error status == " + jsonStringify (status));
+			$("#" + idRiver).html ("<div class=\"divGetRiverError\">Can't display the river because the file does not exist, or there was an error accessing it over the net.</div>");
 			if (callback != undefined) {
 				callback ();
 				}
