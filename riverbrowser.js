@@ -1,22 +1,23 @@
  
 document.write ('<link href="http://fargo.io/code/ubuntuFont.css" rel="stylesheet" type="text/css">');
-document.write ('<script src="http://fargo.io/code/node/shared/utils.js"></script>');
-document.write ('<script src="http://api.nodestorage.io/api.js"></script>');
-document.write ('<script src="http://fargo.io/code/shared/emojify.js"></script>');
-document.write ('<script src="http://fargo.io/cms/dateFormat.js"></script>');
+document.write ('<script src="http://fargo.io/code/node/shared/utils.js" async></script>');
+document.write ('<script src="http://api.nodestorage.io/api.js" async></script>');
+document.write ('<script src="http://fargo.io/code/shared/emojify.js" async></script>');
+document.write ('<script src="http://fargo.io/cms/dateFormat.js" async></script>');
 document.write ('<link rel="stylesheet" href="http://fargo.io/code/fontAwesome/css/font-awesome.min.css"/>');
 document.write ('<link href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">');
-document.write ('<script src="http://fargo.io/code/browsers/outlinebrowser.js"></script>'); //6/18/15 by DW
+document.write ('<script src="http://fargo.io/code/browsers/outlinebrowser.js" async></script>'); //6/18/15 by DW
 document.write ('<link href="http://fargo.io/code/browsers/riverbrowser.css" rel="stylesheet" type="text/css">');
 
 var riverBrowserData = {
-	version: "0.41",
+	version: "0.43",
 	enclosureIconHtml: "<i class=\"fa fa-headphones\"></i>",
 	flEnclosureIcon: true,
 	flShareIcon: true,
 	flOutlinesExpandedByDefault: false, //4/16/15 by DW
 	urlTwitterServer: "http://twitter2.radio3.io:5342/", //6/18/15 by DW
 	theRiver: undefined,  //6/18/15 by DW -- used to be global
+	urlLinkBlogTool: "http://radio3.io/", //4/3/17 by DW
 	getExtraFooterCallback: function (item, theFooter) {
 		return (theFooter);
 		},
@@ -32,6 +33,9 @@ var riverBrowserData = {
 			titleAtt = " title=\"" + title + "\"";
 			}
 		return ("<a href=\"" + url + "\"" + titleAtt + ">" + linktext + "</a>");
+		},
+	openWindowCallback: function (url) { //4/3/17 by DW
+		window.open (url);
 		}
 	};
 
@@ -62,7 +66,7 @@ function findRiverItem (theRiver, iditem, callback) { //4/14/15 by DW
 		}
 	}
 function shareClick (iditem) {
-	var feeds = riverBrowserData.theRiver.updatedFeeds.updatedFeed, urlLinkBlogTool = "http://radio3.io/";
+	var feeds = riverBrowserData.theRiver.updatedFeeds.updatedFeed, urlLinkBlogTool = riverBrowserData.urlLinkBlogTool;
 	try {
 		if (appPrefs.urlLinkBlogTool != undefined) { //10/3/14 by DW
 			urlLinkBlogTool = appPrefs.urlLinkBlogTool;
@@ -102,7 +106,9 @@ function shareClick (iditem) {
 				if (endsWith (urlShare, "&")) {
 					urlShare = urlShare.substr (0, urlShare.length - 1); //pop last char
 					}
-				window.open (urlShare);
+				
+				riverBrowserData.openWindowCallback (urlShare); //4/3/17 by DW
+				
 				return;
 				}
 			}
@@ -296,7 +302,7 @@ function freshRiverDisplay (idRiver) {
 						if (j > 0) {
 							items += "<div class=\"divInterItemSpacer\"></div>";
 							}
-						if (item.outline != undefined) {
+						if ((item.outline !== undefined) && (item.outline.type !== undefined)) { //6/13/17 by DW -- check for type being undefined
 							switch (item.outline.type) {
 								case "tweet":
 									var flTweetCollapsed = true, style = "";
