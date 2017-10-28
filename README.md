@@ -8,7 +8,7 @@ Here's a <a href="http://scripting.com/2015/06/19/riverbrowserOpenSourceRelease.
 
 A river is a reverse-chronologic list of new stories. 
 
-<a href="https://github.com/scripting/river4">River4</a> is a Node.js app that generates these files. 
+<a href="https://github.com/scripting/river5">River5</a> is a Node.js app that generates these files. 
 
 It's an open, <a href="http://riverjs.org/">documented</a> format, available for anyone to use.
 
@@ -30,15 +30,13 @@ The first parameter is the address of the river file. The second parameter is th
 
 #### Projects that use riverBrowser
 
-These are my real-world projects that use riverBrowser. 
+A few of my real-world projects that use riverBrowser. 
 
 1. <a href="http://techblast.org/">techblast.org</a> -- "A blast of tech all day every day."
 
 2. <a href="http://radio3.io/rivers/">Radio's rivers</a> -- These are the rivers I follow.  
 
 3. <a href="http://podcatch.com/">Podcatch.com</a> -- "A good podcast listen, now."
-
-4. <a href="http://scripting.com/">Scripting News</a> -- My first blog, still going strong. Little-known fact, every tab is a river. ;-)
 
 5. <a href="http://fargo.io/code/helloriver/index.html">Hello River</a> -- The <a href="http://river4.smallpict.com/2014/10/05/theHelloWorldOfRivers.html">hello world</a> of rivers. 
 
