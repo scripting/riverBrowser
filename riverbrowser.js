@@ -10,7 +10,7 @@ document.write ('<script src="http://fargo.io/code/browsers/outlinebrowser.js" a
 document.write ('<link href="http://fargo.io/code/browsers/riverbrowser.css" rel="stylesheet" type="text/css">');
 
 var riverBrowserData = {
-	version: "0.45",
+	version: "0.4.6",
 	enclosureIconHtml: "<i class=\"fa fa-headphones\"></i>",
 	flEnclosureIcon: true,
 	flShareIcon: true,
@@ -366,7 +366,15 @@ function renderRiveritem (item, serialnum) {
 	}
 
 function freshRiverDisplay (idRiver) {
-	var feeds = riverBrowserData.theRiver.updatedFeeds.updatedFeed, idSerialNum = 0;
+	var feeds = riverBrowserData.theRiver.updatedFeeds.updatedFeed, idSerialNum = 0, linksSeen = new Object ();
+	function linkNotSeen (link) { //10/27/17 by DW
+		if (link === undefined) {
+			return (true);
+			}
+		else {
+			return (linksSeen [item.link] === undefined);
+			}
+		}
 	$("#" + idRiver).empty ();
 	for (var i = 0; i < feeds.length; i++) {
 		var feed = feeds [i], feedLink, whenFeedUpdated, favicon = "", items = "";
@@ -385,14 +393,15 @@ function freshRiverDisplay (idRiver) {
 			//set items
 				for (var j = 0; j < feed.item.length; j++) {
 					var item = feed.item [j], title, body, itemlink, itemhtml, sharelink, idItem = "idItem" + idSerialNum++, enclosurelink = "";
-					if (riverBrowserData.includeItemInRiverCallback (item)) {
-						if (j > 0) {
-							items += "<div class=\"divInterItemSpacer\"></div>";
+					if (linkNotSeen (item.link)) { //10/27/17 by DW
+						if (riverBrowserData.includeItemInRiverCallback (item)) {
+							if (j > 0) {
+								items += "<div class=\"divInterItemSpacer\"></div>";
+								}
+							var itemhtml = renderRiveritem (item, idSerialNum++);
+							items += itemhtml;
+							linksSeen [item.link] = true; //10/27/17 by DW
 							}
-						
-						var itemhtml = renderRiveritem (item, idSerialNum++);
-						
-						items += itemhtml;
 						}
 					}
 				items = emojiProcess (items); //10/11/14 by DW
