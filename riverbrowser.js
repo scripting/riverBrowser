@@ -1,16 +1,15 @@
- 
-document.write ('<link href="http://fargo.io/code/ubuntuFont.css" rel="stylesheet" type="text/css">');
-document.write ('<script src="http://fargo.io/code/node/shared/utils.js" async></script>');
-document.write ('<script src="http://api.nodestorage.io/api.js" async></script>');
-document.write ('<script src="http://fargo.io/code/shared/emojify.js" async></script>');
-document.write ('<script src="http://fargo.io/cms/dateFormat.js" async></script>');
-document.write ('<link rel="stylesheet" href="http://fargo.io/code/fontAwesome/css/font-awesome.min.css"/>');
-document.write ('<link href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">');
-document.write ('<script src="http://fargo.io/code/browsers/outlinebrowser.js" async></script>'); //6/18/15 by DW
-document.write ('<link href="http://fargo.io/code/browsers/riverbrowser.css" rel="stylesheet" type="text/css">');
+document.write ('<link href="//s3.amazonaws.com/fargo.io/code/ubuntuFont.css" rel="stylesheet" type="text/css">');
+document.write ('<script src="//s3.amazonaws.com/fargo.io/code/node/shared/utils.js" async></script>');
+document.write ('<script src="//s3.amazonaws.com/api.nodestorage.io/api.js" async></script>');
+document.write ('<script src="//s3.amazonaws.com/fargo.io/code/shared/emojify.js" async></script>');
+document.write ('<script src="//s3.amazonaws.com/fargo.io/cms/dateFormat.js" async></script>');
+document.write ('<link rel="stylesheet" href="//s3.amazonaws.com/fargo.io/code/fontAwesome/css/font-awesome.min.css"/>');
+document.write ('<link href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css">');
+document.write ('<script src="//s3.amazonaws.com/fargo.io/code/browsers/outlinebrowser.js" async></script>'); //6/18/15 by DW
+document.write ('<link href="//s3.amazonaws.com/fargo.io/code/browsers/riverbrowser.css" rel="stylesheet" type="text/css">');
 
 var riverBrowserData = {
-	version: "0.4.6",
+	version: "0.4.7",
 	enclosureIconHtml: "<i class=\"fa fa-headphones\"></i>",
 	flEnclosureIcon: true,
 	flShareIcon: true,
@@ -217,13 +216,10 @@ function getItemFooter (item) { //9/22/14 by DW
 	var itemfooter = "<span class=\"spTimeDifference\">" + timediff + "</span>" + enclosurelink + sharelink;
 	return ("<div class=\"divItemFooter\">" + riverBrowserData.getExtraFooterCallback (item, itemfooter) + "</div>");
 	}
-
 function getItemPermalink (item) { //6/15/17 by DW
 	var title = "Direct link to this item.";
 	return ("<span class=\"spRiverPermaLink\"><a href=\"" + item.link + "\" title=\"" + title + "\">#</a></span>");
 	 }
-
-
 function expandableTweetTextLink (theText, idTweet, idLevel) {
 	return ("<a class=\"aOutlineTextLink\" onclick=\"ecTweet (" + idLevel + ", '" + idTweet + "')\">" + theText + "</a>");
 	}
@@ -284,7 +280,6 @@ function riverRenderTypedOutline (outline, urlPermalink, permalinkString, flExpa
 	itemhtml = emojiProcess (itemhtml); //11/4/14 by DW
 	return (itemhtml);
 	}
-
 function createRiverLink (url, linktext, title) { //12/17/15 by DW
 	return (riverBrowserData.createLinkCallback (url, linktext, title));
 	}
@@ -364,21 +359,21 @@ function renderRiveritem (item, serialnum) {
 		}
 	return ("<div class=\"divItem\" id=\"" + idItem + "\">" + itemhtml + "</div>");
 	}
-
 function freshRiverDisplay (idRiver) {
-	var feeds = riverBrowserData.theRiver.updatedFeeds.updatedFeed, idSerialNum = 0, linksSeen = new Object ();
-	function linkNotSeen (link) { //10/27/17 by DW
-		if (link === undefined) {
-			return (true);
-			}
-		else {
-			return (linksSeen [item.link] === undefined);
-			}
-		}
+	var feeds = riverBrowserData.theRiver.updatedFeeds.updatedFeed, idSerialNum = 0;
 	$("#" + idRiver).empty ();
 	for (var i = 0; i < feeds.length; i++) {
-		var feed = feeds [i], feedLink, whenFeedUpdated, favicon = "", items = "";
+		var feed = feeds [i], feedLink, whenFeedUpdated, favicon = "", items = "", linksSeen = new Object ();
 		if (riverBrowserData.includeFeedInRiverCallback (feed)) {
+			function linkNotSeen (link) { //10/27/17 by DW
+				if (link === undefined) {
+					return (true);
+					}
+				else {
+					return (linksSeen [item.link] === undefined);
+					}
+				}
+			
 			//set feedLink
 				feedLink = feed.feedTitle;
 				if ((feed.websiteUrl != null) && (feed.websiteUrl.length > 0)) {
@@ -430,7 +425,7 @@ function httpGetRiver (urlRiver, idRiver, callback) {
 			riverBrowserData.theRiver = data;
 			freshRiverDisplay (idRiver);
 			if (callback != undefined) {
-				callback ();
+				callback (data);
 				}
 			},
 		error: function (status) {
